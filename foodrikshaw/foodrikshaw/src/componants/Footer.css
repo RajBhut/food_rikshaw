@@ -1,0 +1,12 @@
+.data{
+color: aliceblue;
+}
+footer{
+    display: flex;
+    
+    justify-content: space-around;
+    align-items: center;
+    background: #000;
+    min-height: 100px;
+width:100%;
+}
