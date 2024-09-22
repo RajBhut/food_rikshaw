@@ -29,9 +29,8 @@ export default function Routs() {
             }
           />
           <Route
-            path="/manu"
+            path="/menu"
             element={
-              
               <Layout>
                 <Manu />
               </Layout>

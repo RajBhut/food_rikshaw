@@ -4,8 +4,22 @@
   max-width: 100%;
   align-items: center;
 }
+
+.main_manu img {
+  margin: 2%;
+  filter: drop-shadow(10px 10px 15px rgba(0, 0, 0, 0.3));
+  max-width: 250px;
+  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  animation: appear linear;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
 .cards {
-  background: rgb(27, 26, 26);
   border-radius: 8px;
   box-shadow: 0 2px 15px rgba(36, 35, 35, 0.2);
   margin: 2%;
@@ -83,7 +97,8 @@
   justify-content: center;
 }
 .Logo img {
-  width: 100%;
+  max-width: 300px;
+  max-height: 300px;
   height: inherit;
 }
 .image img {

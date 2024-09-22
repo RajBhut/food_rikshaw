@@ -12,7 +12,9 @@ export default function Nav() {
           <Link to={"/"}>
             <li>Home</li>
           </Link>
-          <li>Menu</li>
+          <Link to={"/menu"}>
+            <li>Menu</li>
+          </Link>
           <li>About</li>
           {user ? (
             <li>{user.name}</li>

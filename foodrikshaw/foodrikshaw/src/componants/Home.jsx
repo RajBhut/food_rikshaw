@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "./Layout";
 import { Usercontext } from "./Userprovider";
 import axios from "axios";
+import Card from "./Card";
+
 export default function Home() {
   const navigate = useNavigate();
   const { user, setuser } = useContext(Usercontext);
@@ -27,47 +29,50 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    getprofile();
+    //   getprofile();
   }, [navigate, setuser]);
 
   return (
     <>
       <div className="main_container">
-        <div className="search-container">
+        {/* <div className="search-container">
           <input type="text" placeholder="Search.." name="search" />
           <button type="submit">Submit</button>
-        </div>
+        </div> */}
 
         <div className="content">
           <div className="Logo">
-            <img
-              src="src\assets\Screenshot_2024-08-04_170940-removebg-preview.png"
-              alt=""
-            />
+            <img src="/Designer.png" alt="" />
           </div>
-          <div className="cards">
+          <div className="main_manu">
             <div className="image">
-              <Link to={"/manu"} state={{ selectedTab: "lunch" }}>
-                <img src="  /sevtameta.jpg"></img>
+              <Link to={"/menu"} state={{ selectedTab: "lunch" }}>
+                <img src="/aluu.png"></img>
               </Link>
             </div>
           </div>
 
-          <div className="cards">
+          <div className="main_manu">
             <div className="image">
-              <Link to={"/manu"} state={{ selectedTab: "dinner" }}>
-                <img src="  /sevtameta.jpg"></img>
+              <Link to={"/menu"} state={{ selectedTab: "dinner" }}>
+                <img src="/sev_tam.jpg"></img>
               </Link>
             </div>
           </div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
-          <div className="cards"></div>
+          {/* <div className="cards"></div> */}
+
+          <Card
+            name="Alu Sabji"
+            price={25}
+            tag="Lunch Special"
+            imageUrl="/aluu.png"
+          />
+          <Card
+            name="Sev Tamatar"
+            price={25}
+            tag="Dinner Special"
+            imageUrl="/sev_tam.jpg"
+          />
         </div>
       </div>
     </>
