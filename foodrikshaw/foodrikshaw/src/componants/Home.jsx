@@ -60,19 +60,6 @@ export default function Home() {
             </div>
           </div>
           {/* <div className="cards"></div> */}
-
-          <Card
-            name="Alu Sabji"
-            price={25}
-            tag="Lunch Special"
-            imageUrl="/aluu.png"
-          />
-          <Card
-            name="Sev Tamatar"
-            price={25}
-            tag="Dinner Special"
-            imageUrl="/sev_tam.jpg"
-          />
         </div>
       </div>
     </>
