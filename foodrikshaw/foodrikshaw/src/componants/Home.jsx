@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import { Usercontext } from "./Userprovider";
 import axios from "axios";
 import Card from "./Card";
+import { genrateToken } from "../notification/firebase";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -31,6 +32,10 @@ export default function Home() {
   useEffect(() => {
     //   getprofile();
   }, [navigate, setuser]);
+
+  useEffect(() => {
+    genrateToken();
+  }, []);
 
   return (
     <>
