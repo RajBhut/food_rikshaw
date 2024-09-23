@@ -22,7 +22,7 @@ UserSchema.methods.comparePassword = async function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-UserSchema.methods.UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) {
     this.password = bcrypt.hashSync(this.password, 10);
 
     next();
