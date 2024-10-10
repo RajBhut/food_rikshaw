@@ -29,13 +29,15 @@ export default function Login() {
     if (formdata.email === "" || formdata.password === "") {
       seterror("Please fill all the fields");
     } else {
-      await axios.post("http://localhost:3000/user/", formdata).then((res) => {
-        if (res.status >= 400) {
-          seterror("Invalid email or password");
-        } else {
-          navigate("/");
-        }
-      });
+      await axios
+        .post("https://food-rikshaw-3t6y.vercel.app/user/", formdata)
+        .then((res) => {
+          if (res.status >= 400) {
+            seterror("Invalid email or password");
+          } else {
+            navigate("/");
+          }
+        });
     }
   };
 

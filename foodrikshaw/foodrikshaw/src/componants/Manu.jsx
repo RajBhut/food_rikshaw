@@ -17,7 +17,9 @@ const Manu = () => {
   const [products, setProducts] = useState();
 
   const fetchData = async () => {
-    const response = await axios.get("http://localhost:3000/product");
+    const response = await axios.get(
+      "https://food-rikshaw-3t6y.vercel.app/product"
+    );
     setProducts(response.data);
   };
 
@@ -42,7 +44,9 @@ const Manu = () => {
 
   const handlepurchase = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/purchase/buy");
+      const res = await axios.post(
+        "https://food-rikshaw-3t6y.vercel.app/purchase/buy"
+      );
       settotal(0);
       setaddedproduct([]);
       console.log("Purchase successful!", res.data);

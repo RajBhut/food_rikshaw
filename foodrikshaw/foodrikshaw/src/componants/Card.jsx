@@ -36,7 +36,7 @@ export default function Card({ name, price, imageUrl, tag, id }) {
 
   const add_to_cart = async (product) => {
     const response = await axios.post(
-      "http://localhost:3000/user/cart",
+      "https://food-rikshaw-3t6y.vercel.app/user/cart",
 
       product,
       { withCredentials: true }

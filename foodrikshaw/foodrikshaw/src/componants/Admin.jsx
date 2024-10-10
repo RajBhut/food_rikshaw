@@ -19,9 +19,12 @@ export default function Admin() {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3000/purchase/all", {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        "https://food-rikshaw-3t6y.vercel.app/purchase/all",
+        {
+          withCredentials: true,
+        }
+      );
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);

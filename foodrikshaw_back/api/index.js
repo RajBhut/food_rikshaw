@@ -8,7 +8,12 @@ import { productrouter } from './Router/productroter.js';
 import { purchaserouter } from './Router/purchaserouter.js';
 const app = exprees();
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(
+    cors({
+        origin: ['http://localhost:5173', 'https://food.rajb.codes'],
+        credentials: true,
+    }),
+);
 app.use(exprees.json());
 
 app.use(cookieParser());
