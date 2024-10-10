@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+    backend:
+        build: .
+        ports:
+            - '3000:3000'
+        environment:
+            - MONGO_URL=mongodb://mongo:27017/foodrikshaw
+            - MONGO_URL_PRO=mongodb+srv://user-1:IosdrCMdETd26NAV@raj.y4qn7pr.mongodb.net/?retryWrites=true&w=majority&appName=Raj
+            - JWT_SECRET=MY_SECRET_KEY
+            - JWT_EXPIRES_IN=30d
+            - ADMIN = "rajbhut2832005@gmail.com"
+        volumes:
+            - .:/app
+        depends_on:
+            - mongo
+
+    mongo:
+        image: mongo:latest
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongo-data:/data/db
+
+volumes:
+    mongo-data:

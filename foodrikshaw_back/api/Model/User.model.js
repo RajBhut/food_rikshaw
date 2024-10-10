@@ -16,6 +16,20 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    cart: [
+        {
+            product_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+            quantity: {
+                type: Number,
+            },
+            price: {
+                type: Number,
+            },
+        },
+    ],
 });
 
 UserSchema.methods.comparePassword = async function (password) {

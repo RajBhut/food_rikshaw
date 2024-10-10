@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const purchase_schema = new mongoose.Schema(
     {
         user_id: {
@@ -6,30 +7,30 @@ const purchase_schema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
-        product_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
-            required: true,
-        },
-        quantity: {
+        products: [
+            {
+                product_id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product',
+                    required: true,
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                },
+            },
+        ],
+        total: {
             type: Number,
             required: true,
         },
-        total_price: {
-            type: Number,
-            required: true,
-            default: 0,
+        isReady: {
+            type: Boolean,
+            default: false,
         },
     },
     { strict: false, timestamps: true },
 );
 
-purchase_schema.methods.toJSON = function () {
-    const purchase = this;
-    const purchaseObject = purchase.toObject();
-    delete purchaseObject.__v;
-    return purchaseObject;
-};
-
 const Purchase = mongoose.model('Purchase', purchase_schema);
-export default Purchase;
+export { Purchase };

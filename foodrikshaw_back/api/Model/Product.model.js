@@ -1,4 +1,3 @@
-import e from 'express';
 import mongoose from 'mongoose';
 
 const product_scema = new mongoose.Schema(
@@ -21,6 +20,9 @@ const product_scema = new mongoose.Schema(
             type: String,
             require: true,
             enum: ['breakfast', 'lunch', 'dinner'],
+        },
+        everyday: {
+            type: Boolean,
         },
         day: {
             type: String,
