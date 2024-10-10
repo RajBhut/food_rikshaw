@@ -18,7 +18,7 @@ const Manu = () => {
 
   const fetchData = async () => {
     const response = await axios.get(
-      "https://food-rikshaw-3t6y.vercel.app/product"
+      "https://food-rikshaw-3t6y-idnewf3k5-rajbhuts-projects.vercel.app/product"
     );
     setProducts(response.data);
   };

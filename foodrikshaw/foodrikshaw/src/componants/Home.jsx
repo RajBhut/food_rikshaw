@@ -21,7 +21,7 @@ export default function Home() {
   const getprofile = async () => {
     try {
       const response = await axios.get(
-        "https://food-rikshaw-3t6y.vercel.app/user/profile",
+        "https://food-rikshaw-3t6y-idnewf3k5-rajbhuts-projects.vercel.app/user/profile",
         {
           withCredentials: true,
         }
@@ -46,7 +46,7 @@ export default function Home() {
   const fetch_cart = async () => {
     try {
       const data = await axios.get(
-        "https://food-rikshaw-3t6y.vercel.app/user/cart",
+        "https://food-rikshaw-3t6y-idnewf3k5-rajbhuts-projects.vercel.app/user/cart",
         {
           withCredentials: true,
         }
