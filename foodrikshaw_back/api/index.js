@@ -10,10 +10,9 @@ const app = exprees();
 
 app.use(
     cors({
-        origin: 'https://food.rajb.codes',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        origin: 'https://food.rajb.codes/',
+
         credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization'],
     }),
 );
 

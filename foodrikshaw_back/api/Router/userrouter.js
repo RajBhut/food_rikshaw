@@ -99,7 +99,7 @@ Userrouter.post('/login', async (req, res) => {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
         });
-        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+
         res.header('Access-Control-Allow-Credentials', 'true');
         res.status(200).json(user.name);
     } catch (error) {
