@@ -11,9 +11,12 @@ const app = exprees();
 app.use(
     cors({
         origin: 'https://food.rajb.codes',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
     }),
 );
+
 app.use(exprees.json());
 
 app.use(cookieParser());
