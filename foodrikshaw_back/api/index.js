@@ -9,12 +9,10 @@ const app = express();
 
 app.use(
     cors({
-        // origin: 'https://food.rajb.codes',
-        origin: '*',
-        //   credentials: true,
+        origin: 'https://food.rajb.codes',
+        credentials: true,
     }),
 );
-
 app.use(express.json());
 app.use(cookieParser());
 
