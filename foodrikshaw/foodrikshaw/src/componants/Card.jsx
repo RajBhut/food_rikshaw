@@ -1,10 +1,50 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./card.css";
-export default function Card({ name, price, imageUrl, tag }) {
+import axios from "axios";
+import { PurchaseContext } from "./Purchaseprovider";
+export default function Card({ name, price, imageUrl, tag, id }) {
   const [totalprice, setTotalprice] = useState(price);
 
   const [quantity, setQuantity] = useState(1);
+  const { addedproduct, setaddedproduct, total, settotal } =
+    useContext(PurchaseContext);
 
+  const handleadd = () => {
+    settotal((prevTotal) => {
+      const newTotal = prevTotal + quantity * price;
+
+      return newTotal;
+    });
+
+    setaddedproduct((prevProducts) => {
+      const existingProductIndex = prevProducts.findIndex(
+        (product) => product.id === id
+      );
+      if (existingProductIndex !== -1) {
+        const updatedProducts = [...prevProducts];
+        updatedProducts[existingProductIndex].quantity += quantity;
+        add_to_cart(updatedProducts);
+        console.log(updatedProducts);
+        return updatedProducts;
+      } else {
+        console.log([...prevProducts, { product_id: id, quantity, price }]);
+        add_to_cart([...prevProducts, { product_id: id, quantity, price }]);
+        return [...prevProducts, { product_id: id, quantity, price }];
+      }
+    });
+  };
+
+  const add_to_cart = async (product) => {
+    const response = await axios.post(
+      "http://localhost:3000/user/cart",
+
+      product,
+      { withCredentials: true }
+    );
+    console.log(response.data);
+  };
+
+  useEffect(() => {}, []);
   const incrementQuantity = () => {
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + 1;
@@ -52,7 +92,10 @@ export default function Card({ name, price, imageUrl, tag }) {
               +
             </button>
           </div>
-          <button className=" w-fit h-fit bg-blue-500 text-white px-4 py-2  ml-2 rounded-md">
+          <button
+            onClick={handleadd}
+            className=" w-fit h-fit bg-blue-500 text-white px-4 py-2  ml-2 rounded-md"
+          >
             Add
           </button>
         </div>

@@ -5,12 +5,16 @@ import Login from "./Login";
 import About from "./About";
 import Layout from "./Layout";
 import Manu from "./Manu";
+import Log from "./Log";
+import Admin from "./Admin";
 export default function Routs() {
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/log" element={<Log />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<Admin />} />
           <Route
             path="/"
             element={

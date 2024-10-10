@@ -1,12 +1,16 @@
-import Product from '../Model/Product.model';
+import Product from '../Model/Product.model.js';
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 
-const productrouter = Router();
+export const productrouter = Router();
 
 productrouter.get('/', async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().select([
+            '-__v',
+            '-createdAt',
+            '-updatedAt',
+        ]);
         res.json(products);
     } catch (error) {
         console.log(error);
@@ -15,8 +19,16 @@ productrouter.get('/', async (req, res) => {
 });
 
 productrouter.post('/', async (req, res) => {
-    const { name, price, description, img_url, time, day, available } =
-        req.body;
+    const {
+        name,
+        everyday,
+        price,
+        description,
+        img_url,
+        time,
+        day,
+        available,
+    } = req.body;
     try {
         const product = await Product.create({
             name,
@@ -24,6 +36,7 @@ productrouter.post('/', async (req, res) => {
             description,
             img_url,
             time,
+            everyday,
             day,
             available,
         });

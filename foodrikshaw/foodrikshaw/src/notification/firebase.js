@@ -1,12 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { onMessage } from "firebase/messaging";
 import { getMessaging, getToken } from "firebase/messaging";
-// import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDuFG2LIo72guuRrj4tLBoJsLP6eHdODkM",
   authDomain: "foodrikshaw-d0324.firebaseapp.com",
@@ -17,17 +12,28 @@ const firebaseConfig = {
   measurementId: "G-9JWMF8GJM3",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Get Firebase Messaging object
 const messaging = getMessaging(app);
 
-export const genrateToken = async () => {
-  const permision = await Notification.requestPermission();
-  if (permision === "granted") {
+export const requestForToken = async () => {
+  const permission = await Notification.requestPermission();
+  if (permission === "granted") {
     const token = await getToken(messaging, {
       vapidKey:
         "BAt-jvAhE1Nmvx5u9R0M8_EehpZocljoJs_0saLeLbMACKpOBzR6eIymYkQSwJa_tysVJONUaOny01ixL_7i7Xk",
     });
-    console.log(token);
+    console.log("Token received: ", token);
+    return token;
+  } else {
+    console.log("Permission not granted for notifications");
   }
 };
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      console.log("Message received: ", payload);
+      resolve(payload);
+    });
+  });

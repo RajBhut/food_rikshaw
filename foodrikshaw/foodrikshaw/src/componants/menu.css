@@ -5,3 +5,103 @@
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.7s ease-in-out;
 }
+/* Basic Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Container for the cards */
+.tab-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Card styling */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 300px; /* Adjust max width for bigger screens */
+  text-align: center;
+}
+
+/* Mobile view: make sure the cards take full width */
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+  }
+}
+
+/* Add hover effects */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Image */
+.card img {
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+/* Card Content */
+.card-content {
+  padding: 1rem;
+}
+
+/* Button Styling */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f8f9fa;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 15px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tabs .active {
+  background-color: #007bff;
+  color: white;
+}
+
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 10px 0;
+  text-align: center;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+}

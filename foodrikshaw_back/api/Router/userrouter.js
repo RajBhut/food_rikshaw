@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import User from '../Model/User.model.js';
-
+import Product from '../Model/Product.model.js';
 import jwt from 'jsonwebtoken';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const Userrouter = Router();
 
-const auth = async (req, res, next) => {
-    console.log(1);
+export const auth = async (req, res, next) => {
     if (!req.cookies.jwt) {
         console.log('no token');
         return res.status(401).send('Unauthorized: No token provided');
@@ -14,19 +14,17 @@ const auth = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+
         const user = await User.findById(decoded.id).select([
             '-password',
             '-__v',
-            '-_id',
         ]);
 
         if (!user) {
-            console.log(2);
             return res.status(401).send('Unauthorized: Invalid token');
         } else {
-            console.log(3);
             req.user = user;
-            console.log(req.user);
+
             next();
         }
     } catch (error) {
@@ -55,7 +53,7 @@ Userrouter.post('/', async (req, res) => {
             sameSite: 'none',
             secure: true,
             httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000 * 5,
         });
         res.header('Access-Control-Allow-Credentials', 'true');
 
@@ -72,34 +70,72 @@ Userrouter.get('/all', auth, async (req, res) => {
 });
 Userrouter.get('/profile', auth, async (req, res) => {
     const user = req.user;
+    const admin = process.env.ADMIN;
 
-    res.status(200).json(user);
+    if (user.email === admin) {
+        res.status(200).json([user, { admin: true }]);
+    } else {
+        res.status(200).json([user, { admin: false }]);
+    }
 });
 Userrouter.post('/login', async (req, res) => {
     const { email, password } = req.body;
+
     try {
-        const user = await User.findOne({ email }).select(['-__v', '-_id']);
+        const user = await User.findOne({ email }).select(['-__v']);
+
         if (!user) {
             return res.status(400).send('Invalid email or password');
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(401).send('Invalid email or password');
         }
         const token = genrateToken(user._id);
+
         res.cookie('jwt', token, {
             sameSite: 'none',
             secure: true,
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
         });
+
         res.header('Access-Control-Allow-Credentials', 'true');
-        res.status(200).send('Logged in');
+        res.status(200).json(user.name);
     } catch (error) {
         console.log(error);
         res.status(400).send('Error in logging in');
     }
 });
+
+Userrouter.get('/cart', auth, async (req, res) => {
+    const user = req.user;
+
+    try {
+        const data = await User.findById(user._id);
+        const real_data = data.cart;
+        res.status(200).json(real_data);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Error in fetching cart');
+    }
+});
+
+Userrouter.post('/cart', auth, async (req, res) => {
+    const user = req.user;
+    const products = req.body;
+
+    try {
+        await User.findByIdAndUpdate(user._id, {
+            $set: { cart: products },
+        });
+        res.status(200).send('Added to cart');
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Error in adding to cart');
+    }
+});
+
 Userrouter.get('/profile/:email', async (req, res) => {
     const { email } = req.params;
     try {
