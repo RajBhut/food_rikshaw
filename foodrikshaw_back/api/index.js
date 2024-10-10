@@ -9,8 +9,9 @@ const app = express();
 
 app.use(
     cors({
-        origin: 'https://food.rajb.codes',
-        credentials: true,
+        // origin: 'https://food.rajb.codes',
+        origin: '*',
+        //   credentials: true,
     }),
 );
 
@@ -21,10 +22,9 @@ app.use('/user', Userrouter);
 app.use('/product', productrouter);
 app.use('/purchase', purchaserouter);
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
-
 app.get('/', (req, res) => {
     res.send('Hello World' + Date.now());
+});
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
