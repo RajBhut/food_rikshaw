@@ -10,7 +10,7 @@ const app = exprees();
 
 app.use(
     cors({
-        origin: 'https://food.rajb.codes/',
+        origin: '*',
 
         credentials: true,
     }),
