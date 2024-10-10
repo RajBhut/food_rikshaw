@@ -10,7 +10,7 @@ const app = exprees();
 
 app.use(
     cors({
-        origin: ['http://localhost:5173', 'https://food.rajb.codes'],
+        origin: 'https://food.rajb.codes',
         credentials: true,
     }),
 );
