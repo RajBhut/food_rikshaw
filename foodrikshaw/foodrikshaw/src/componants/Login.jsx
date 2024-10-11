@@ -30,7 +30,9 @@ export default function Login() {
       seterror("Please fill all the fields");
     } else {
       await axios
-        .post("https://food-rikshaw-64to.vercel.app/user/", formdata)
+        .post("https://food-rikshaw-64to.vercel.app/user/", formdata, {
+          timeout: 1000,
+        })
         .then((res) => {
           if (res.status >= 400) {
             seterror("Invalid email or password");
