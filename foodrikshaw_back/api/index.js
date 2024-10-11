@@ -6,13 +6,13 @@ import { productrouter } from './Router/productroter.js';
 import { purchaserouter } from './Router/purchaserouter.js';
 
 const app = express();
-//test
 app.use(
     cors({
-        origin: '*',
-        credentials: true,
+        origin: 'https://food.rajb.codes', // Only allow requests from this domain
+        credentials: true, // Allow credentials like cookies or authorization headers
     }),
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
