@@ -8,7 +8,7 @@ import { purchaserouter } from './Router/purchaserouter.js';
 const app = express();
 app.use(
     cors({
-        origin: 'https://food.rajb.codes', // Only allow requests from this domain
+        origin: '*', // Only allow requests from this domain
         credentials: true, // Allow credentials like cookies or authorization headers
     }),
 );
