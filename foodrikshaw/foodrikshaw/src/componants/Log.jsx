@@ -26,9 +26,7 @@ export default function Log() {
       seterror("Please fill all the fields");
     } else {
       await axios
-        .post("https://food-rikshaw-64to.vercel.app/user/login", formdata, {
-          timeout: 10000,
-        })
+        .post("https://food-rikshaw-64to.vercel.app/user/login", formdata)
         .then((res) => {
           if (res.status >= 400) {
             seterror("Invalid email or password");
