@@ -49,7 +49,8 @@ Userrouter.post('/', async (req, res) => {
     try {
         const user = await User.create({ name, email, password });
         const token = genrateToken(user._id);
-
+        console.log(token, 'token');
+        console.log(user._id, 'user._id');
         res.cookie('jwt', token, {
             sameSite: 'none',
             secure: true,
