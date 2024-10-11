@@ -57,10 +57,10 @@ Userrouter.post('/', async (req, res) => {
         });
         res.header('Access-Control-Allow-Credentials', 'true');
 
-        res.status(200).json(user.name);
+        return res.status(200).json(user.name);
     } catch (error) {
         console.log(error);
-        res.status(400).send('Error in creating user');
+        return res.status(400).send('Error in creating user');
     }
 });
 
