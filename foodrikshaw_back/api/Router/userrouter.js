@@ -45,14 +45,15 @@ Userrouter.get('/', (req, res) => {
 
 Userrouter.post('/', async (req, res) => {
     console.log(req.body);
+    const test = await Product.findOne();
+    console.log('Test Query:', test);
+
     const { name, email, password } = req.body;
     try {
-        console.log('Creating user...');
         const user = await User.create({ name, email, password });
-        console.log('User created:', user);
+
         const token = genrateToken(user._id);
-        console.log(token, 'token');
-        console.log(user._id, 'user._id');
+
         res.cookie('jwt', token, {
             sameSite: 'none',
             secure: true,
