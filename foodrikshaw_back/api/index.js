@@ -6,7 +6,7 @@ import { productrouter } from './Router/productroter.js';
 import { purchaserouter } from './Router/purchaserouter.js';
 
 const app = express();
-
+//test
 app.use(
     cors({
         origin: 'https://food.rajb.codes',
