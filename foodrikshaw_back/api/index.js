@@ -9,7 +9,7 @@ const app = express();
 //test
 app.use(
     cors({
-        origin: 'https://food.rajb.codes',
+        origin: 'https://food.rajb.codes/',
         credentials: true,
     }),
 );
