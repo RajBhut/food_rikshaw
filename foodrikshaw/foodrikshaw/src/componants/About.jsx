@@ -12,7 +12,7 @@ export default function About() {
 
     try {
       const data = await axios.get(
-        "https://food-rikshaw-c2fc.vercel.app/user/all",
+        "https://food-rikshaw-64to.vercel.app//user/all",
         { withCredentials: true }
       );
       setUsers(data);

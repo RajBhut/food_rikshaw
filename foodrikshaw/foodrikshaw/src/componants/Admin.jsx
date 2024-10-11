@@ -20,7 +20,7 @@ export default function Admin() {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        "https://food-rikshaw-c2fc.vercel.app/purchase/all",
+        "https://food-rikshaw-64to.vercel.app/purchase/all",
         {
           withCredentials: true,
         }

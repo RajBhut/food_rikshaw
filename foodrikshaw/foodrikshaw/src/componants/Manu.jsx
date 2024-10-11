@@ -18,7 +18,7 @@ const Manu = () => {
 
   const fetchData = async () => {
     const response = await axios.get(
-      "https://food-rikshaw-c2fc.vercel.app/product"
+      "https://food-rikshaw-64to.vercel.app/product"
     );
     setProducts(response.data);
   };
@@ -45,7 +45,7 @@ const Manu = () => {
   const handlepurchase = async () => {
     try {
       const res = await axios.post(
-        "https://food-rikshaw-c2fc.vercel.app/purchase/buy"
+        "https://food-rikshaw-64to.vercel.app/purchase/buy"
       );
       settotal(0);
       setaddedproduct([]);
