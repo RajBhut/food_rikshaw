@@ -27,7 +27,7 @@ export default function Log() {
     } else {
       await axios
         .post("https://food-rikshaw-64to.vercel.app/user/login", formdata, {
-          timeout: 1000,
+          timeout: 10000,
         })
         .then((res) => {
           if (res.status >= 400) {
