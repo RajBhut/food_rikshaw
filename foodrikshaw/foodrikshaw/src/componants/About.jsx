@@ -11,10 +11,9 @@ export default function About() {
     const token = Cookies.get("jwt");
 
     try {
-      const data = await axios.get(
-        "https://food-rikshaw-64to.vercel.app//user/all",
-        { withCredentials: true }
-      );
+      const data = await axios.get(`${import.meta.env.API_URL}/user/all`, {
+        withCredentials: true,
+      });
       setUsers(data);
     } catch (error) {
       if (error.status == 400) navigat("/");
