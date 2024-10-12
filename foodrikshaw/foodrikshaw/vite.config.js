@@ -3,13 +3,13 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      "/": {
-        target: "https://food-rikshaw-c2fc.vercel.app",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
-  },
+  //server: {
+  //   proxy: {
+  //     "/": {
+  //       target: "https://food-rikshaw-c2fc.vercel.app",
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/api/, ""),
+  //     },
+  //   },
+  //  },
 });

@@ -52,6 +52,9 @@ export default function Nav() {
         <Link to={"/menu"}>
           <li>Menu</li>
         </Link>
+        <Link to={"/history"}>
+          <li>Your Orders</li>
+        </Link>
         {/* Render Admin Tab based on the isadmin state */}
         {isadmin && (
           <Link to={"/admin"}>

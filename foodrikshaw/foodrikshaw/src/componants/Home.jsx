@@ -21,7 +21,7 @@ export default function Home() {
   const getprofile = async () => {
     try {
       const response = await axios.get(
-        "https://food-rikshaw-64to.vercel.app/user/profile",
+        `${import.meta.env.VITE_API_URL}/user/profile`,
         {
           withCredentials: true,
         }
@@ -46,13 +46,13 @@ export default function Home() {
   const fetch_cart = async () => {
     try {
       const data = await axios.get(
-        "https://food-rikshaw-64to.vercel.app/user/cart",
+        `${import.meta.env.VITE_API_URL}/user/cart`,
         {
           withCredentials: true,
         }
       );
 
-      if (data && first_fetch) {
+      if (data.data && first_fetch) {
         setaddedproduct(data.data);
 
         data.data.map((pro) => {

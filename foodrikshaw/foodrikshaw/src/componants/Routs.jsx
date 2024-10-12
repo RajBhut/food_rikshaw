@@ -7,6 +7,7 @@ import Layout from "./Layout";
 import Manu from "./Manu";
 import Log from "./Log";
 import Admin from "./Admin";
+import Order from "./Orders";
 export default function Routs() {
   return (
     <>
@@ -23,7 +24,14 @@ export default function Routs() {
               </Layout>
             }
           />
-
+          <Route
+            path="/history"
+            element={
+              <Layout>
+                <Order />
+              </Layout>
+            }
+          />
           <Route
             path="/about"
             element={
