@@ -4,6 +4,7 @@ import { Purchase } from '../Model/Purchase.model.js';
 import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
+import { use } from 'framer-motion/client';
 const purchaserouter = Router();
 
 purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
@@ -13,13 +14,14 @@ purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
 });
 purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     const raw = await Purchase.find();
-    console.log(raw);
+
     const purchases = [];
 
     for (const purchase of raw) {
-        console.log('id:', purchase.user_id);
         let user = await User.findById(purchase.user_id);
-
+        if (user == null) {
+            continue;
+        }
         let pro = [];
 
         for (const items of purchase.products) {
