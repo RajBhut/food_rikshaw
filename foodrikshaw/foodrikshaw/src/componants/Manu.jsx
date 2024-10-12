@@ -351,8 +351,8 @@ const Manu = () => {
       </div>
 
       {/* Modal for editing order */}
+      {console.log(productsmap)}
       {showModal && (
-        console.log(productsmap)
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg w-1/2">
             <h2 className="text-xl font-semibold mb-4">Edit Your Order</h2>
