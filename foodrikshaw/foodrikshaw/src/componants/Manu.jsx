@@ -156,7 +156,6 @@ const Manu = () => {
         "https://food-rikshaw-64to.vercel.app/product"
       );
       setProducts(response.data);
-      console.log(products);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -168,6 +167,7 @@ const Manu = () => {
 
   useEffect(() => {
     if (products.length > 0) {
+      console.log(products);
       const lunchItems = products.filter((product) => product.time === "lunch");
       const dinnerItems = products.filter(
         (product) => product.time === "dinner"
