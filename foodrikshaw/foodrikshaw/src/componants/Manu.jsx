@@ -143,8 +143,14 @@ axios.defaults.withCredentials = true;
 const Manu = () => {
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState("lunch");
-  const { addedproduct, setaddedproduct, total, settotal } =
-    useContext(PurchaseContext);
+  const {
+    productsmap,
+    setproductsmap,
+    addedproduct,
+    setaddedproduct,
+    total,
+    settotal,
+  } = useContext(PurchaseContext);
   const [lunch, setlunch] = useState([]);
   const [dinner, setdinner] = useState([]);
   const [products, setProducts] = useState([]);
@@ -167,7 +173,13 @@ const Manu = () => {
 
   useEffect(() => {
     if (products.length > 0) {
-      console.log(products);
+      products.map((product) => {
+        setproductsmap((prev) => ({
+          ...prev,
+          [product._id]: product,
+        }));
+      });
+
       const lunchItems = products.filter((product) => product.time === "lunch");
       const dinnerItems = products.filter(
         (product) => product.time === "dinner"
@@ -351,8 +363,7 @@ const Manu = () => {
                       key={index}
                       className="flex justify-between items-center mb-2"
                     >
-                      {console.log(prod)}
-                      <span>{prod.name}</span>
+                      <span>{productsmap[prod._id].name}</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleDecrement(prod._id)}
