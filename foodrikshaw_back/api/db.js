@@ -17,8 +17,6 @@ db.on('connected', () => {
 
 export default db;
 
-const mongoose = require('mongoose');
-
 const dbConnectionMiddleware = async (req, res, next) => {
     if (mongoose.connection.readyState !== 1) {
         try {
