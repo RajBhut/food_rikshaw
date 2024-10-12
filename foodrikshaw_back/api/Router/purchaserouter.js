@@ -18,6 +18,7 @@ purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
 
     for (const purchase of raw) {
         let user = await User.findById(purchase.user_id);
+        console.log(user);
         let pro = [];
 
         for (const items of purchase.products) {
