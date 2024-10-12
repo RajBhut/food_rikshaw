@@ -4,7 +4,7 @@ import Product from '../Model/Product.model.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
-import mongoose from 'mongoose';
+
 import { dbConnectionMiddleware } from '../db.js';
 const Userrouter = Router();
 
