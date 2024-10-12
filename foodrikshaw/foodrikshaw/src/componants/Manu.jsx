@@ -156,6 +156,7 @@ const Manu = () => {
         "https://food-rikshaw-64to.vercel.app/product"
       );
       setProducts(response.data);
+      console.log(products);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
