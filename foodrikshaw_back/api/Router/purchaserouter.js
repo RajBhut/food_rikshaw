@@ -13,12 +13,12 @@ purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
 });
 purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     const raw = await Purchase.find();
-    // console.log(raw);
+    console.log(raw);
     const purchases = [];
 
     for (const purchase of raw) {
         let user = await User.findById(purchase.user_id);
-        console.log(user);
+
         let pro = [];
 
         for (const items of purchase.products) {
