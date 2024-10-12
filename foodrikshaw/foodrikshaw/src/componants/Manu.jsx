@@ -350,6 +350,7 @@ const Manu = () => {
                       key={index}
                       className="flex justify-between items-center mb-2"
                     >
+                      {console.log(prod)}
                       <span>{prod.name}</span>
                       <div className="flex items-center space-x-2">
                         <button
