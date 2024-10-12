@@ -1,10 +1,10 @@
 import Product from '../Model/Product.model.js';
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
-
+import db, { dbConnectionMiddleware } from '../db.js';
 export const productrouter = Router();
 
-productrouter.get('/', async (req, res) => {
+productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {
         const products = await Product.find().select([
             '-__v',
@@ -18,7 +18,7 @@ productrouter.get('/', async (req, res) => {
     }
 });
 
-productrouter.post('/', async (req, res) => {
+productrouter.post('/', dbConnectionMiddleware, async (req, res) => {
     const {
         name,
         everyday,
@@ -47,7 +47,7 @@ productrouter.post('/', async (req, res) => {
     }
 });
 
-productrouter.get('/product/:id', async (req, res) => {
+productrouter.get('/product/:id', dbConnectionMiddleware, async (req, res) => {
     const id = req.params.id;
     try {
         const product = await Product.findById(id);
@@ -57,7 +57,7 @@ productrouter.get('/product/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-productrouter.get('/products', async (req, res) => {
+productrouter.get('/products', dbConnectionMiddleware, async (req, res) => {
     const { id, day, available, category, priceMin, priceMax } = req.query;
     let filter = {};
 

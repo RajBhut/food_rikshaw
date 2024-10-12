@@ -16,3 +16,25 @@ db.on('connected', () => {
 });
 
 export default db;
+
+const mongoose = require('mongoose');
+
+const dbConnectionMiddleware = async (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        try {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            console.log('MongoDB connected');
+        } catch (error) {
+            console.error('MongoDB connection error:', error);
+            return res
+                .status(500)
+                .json({ message: 'Database connection error' });
+        }
+    }
+    next();
+};
+
+export { dbConnectionMiddleware };

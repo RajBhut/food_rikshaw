@@ -3,14 +3,15 @@ import { auth } from './userrouter.js';
 import { Purchase } from '../Model/Purchase.model.js';
 import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
+import { dbConnectionMiddleware } from '../db.js';
 const purchaserouter = Router();
 
-purchaserouter.get('/', auth, async (req, res) => {
+purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const Purchase = await Purchase.findmany({ user_id: user._id });
     res.json(Purchase);
 });
-purchaserouter.get('/all', auth, async (req, res) => {
+purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     const raw = await Purchase.find();
     // console.log(raw);
     const purchases = [];
@@ -34,22 +35,26 @@ purchaserouter.get('/all', auth, async (req, res) => {
     res.status(200).json(purchases);
 });
 
-purchaserouter.get('/purchase/today', async (req, res) => {
-    const today = new Date();
-    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+purchaserouter.get(
+    '/purchase/today',
+    dbConnectionMiddleware,
+    async (req, res) => {
+        const today = new Date();
+        const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
-    try {
-        const orders = await Purchase.find({
-            createdAt: { $gte: startOfDay, $lte: endOfDay },
-        });
-        res.status(200).send(orders);
-    } catch (error) {
-        res.status(500).send({ error: "Error fetching today's orders" });
-    }
-});
+        try {
+            const orders = await Purchase.find({
+                createdAt: { $gte: startOfDay, $lte: endOfDay },
+            });
+            res.status(200).send(orders);
+        } catch (error) {
+            res.status(500).send({ error: "Error fetching today's orders" });
+        }
+    },
+);
 
-purchaserouter.get('/cart', auth, async (req, res) => {
+purchaserouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const real_user = await User.findById(user._id);
     const cart = real_user.cart;
@@ -62,7 +67,7 @@ purchaserouter.get('/cart', auth, async (req, res) => {
     res.json(products);
 });
 
-purchaserouter.post('/buy', auth, async (req, res) => {
+purchaserouter.post('/buy', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const real_user = await User.findById(user._id);
 
@@ -92,18 +97,22 @@ purchaserouter.post('/buy', auth, async (req, res) => {
         res.status(401).json('eror in placing order');
     }
 });
-purchaserouter.put('/purchase/:id/ready', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const updatedOrder = await Purchase.findByIdAndUpdate(
-            id,
-            { isReady: true },
-            { new: true },
-        );
-        res.status(200).send(updatedOrder);
-    } catch (error) {
-        res.status(500).send({ error: 'Error updating order status' });
-    }
-});
+purchaserouter.put(
+    '/purchase/:id/ready',
+    dbConnectionMiddleware,
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const updatedOrder = await Purchase.findByIdAndUpdate(
+                id,
+                { isReady: true },
+                { new: true },
+            );
+            res.status(200).send(updatedOrder);
+        } catch (error) {
+            res.status(500).send({ error: 'Error updating order status' });
+        }
+    },
+);
 
 export { purchaserouter };

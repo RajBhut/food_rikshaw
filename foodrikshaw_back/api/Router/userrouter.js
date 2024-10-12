@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
+import { dbConnectionMiddleware } from '../db.js';
 const Userrouter = Router();
 
 export const auth = async (req, res, next) => {
@@ -40,25 +41,7 @@ const genrateToken = (id) => {
     });
 };
 
-Userrouter.get('/', (req, res) => {
-    res.send('User Router');
-});
-
-Userrouter.post('/', async (req, res) => {
-    if (mongoose.connection.readyState !== 1) {
-        try {
-            await mongoose.connect(process.env.MONGODB_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            });
-            console.log('MongoDB connected');
-        } catch (error) {
-            console.error('MongoDB connection error:', error);
-            return res
-                .status(500)
-                .json({ message: 'Database connection error' });
-        }
-    }
+Userrouter.post('/', dbConnectionMiddleware, async (req, res) => {
     const { name, email, password } = req.body;
     try {
         const user = await User.create({ name, email, password });
@@ -81,7 +64,7 @@ Userrouter.post('/', async (req, res) => {
     }
 });
 
-Userrouter.get('/all', auth, async (req, res) => {
+Userrouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     const alluser = await User.find();
     res.send(alluser);
 });
@@ -95,7 +78,7 @@ Userrouter.get('/profile', auth, async (req, res) => {
         res.status(200).json([user, { admin: false }]);
     }
 });
-Userrouter.post('/login', async (req, res) => {
+Userrouter.post('/login', dbConnectionMiddleware, async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -127,7 +110,7 @@ Userrouter.post('/login', async (req, res) => {
     }
 });
 
-Userrouter.get('/cart', auth, async (req, res) => {
+Userrouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
 
     try {
@@ -140,7 +123,7 @@ Userrouter.get('/cart', auth, async (req, res) => {
     }
 });
 
-Userrouter.post('/cart', auth, async (req, res) => {
+Userrouter.post('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const products = req.body;
 
@@ -155,7 +138,7 @@ Userrouter.post('/cart', auth, async (req, res) => {
     }
 });
 
-Userrouter.get('/profile/:email', async (req, res) => {
+Userrouter.get('/profile/:email', dbConnectionMiddleware, async (req, res) => {
     const { email } = req.params;
     try {
         const token = req.cookies.jwt;
