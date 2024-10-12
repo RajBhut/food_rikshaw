@@ -4,7 +4,7 @@ import { Purchase } from '../Model/Purchase.model.js';
 import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
-import { use } from 'framer-motion/client';
+
 const purchaserouter = Router();
 
 purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
