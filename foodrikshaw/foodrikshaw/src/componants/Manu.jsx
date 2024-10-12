@@ -352,6 +352,7 @@ const Manu = () => {
 
       {/* Modal for editing order */}
       {showModal && (
+        console.log(productsmap)
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg w-1/2">
             <h2 className="text-xl font-semibold mb-4">Edit Your Order</h2>
@@ -363,7 +364,7 @@ const Manu = () => {
                       key={index}
                       className="flex justify-between items-center mb-2"
                     >
-                      <span>{productsmap[prod._id].name}</span>
+                      <span>{prod._id}</span>
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleDecrement(prod._id)}
