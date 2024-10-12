@@ -4,6 +4,7 @@ import Product from '../Model/Product.model.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
+import mongoose from 'mongoose';
 const Userrouter = Router();
 
 export const auth = async (req, res, next) => {
@@ -44,6 +45,9 @@ Userrouter.get('/', (req, res) => {
 });
 
 Userrouter.post('/', async (req, res) => {
+    if (mongoose.connection.readyState !== 1) {
+        return res.status(500).json({ message: 'Database not connected' });
+    }
     const { name, email, password } = req.body;
     try {
         const user = await User.create({ name, email, password });
