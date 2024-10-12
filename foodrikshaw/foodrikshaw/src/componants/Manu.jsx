@@ -151,10 +151,14 @@ const Manu = () => {
   const [showModal, setShowModal] = useState(false); // State for showing the modal
 
   const fetchData = async () => {
-    const response = await axios.get(
-      "https://food-rikshaw-64to.vercel.app/product"
-    );
-    setProducts(response.data);
+    try {
+      const response = await axios.get(
+        "https://food-rikshaw-64to.vercel.app/product"
+      );
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
 
   useEffect(() => {
@@ -162,7 +166,7 @@ const Manu = () => {
   }, []);
 
   useEffect(() => {
-    if (products) {
+    if (products.length > 0) {
       const lunchItems = products.filter((product) => product.time === "lunch");
       const dinnerItems = products.filter(
         (product) => product.time === "dinner"
@@ -178,12 +182,8 @@ const Manu = () => {
     }
   }, [location]);
 
-  const handlepurchase = async () => {
-    try {
-      setShowModal(true); // Show the modal when "Proceed to Checkout" is clicked
-    } catch (error) {
-      console.error("Error during purchase:", error);
-    }
+  const handlepurchase = () => {
+    setShowModal(true); // Show the modal when "Proceed to Checkout" is clicked
   };
 
   // Function to add product to the cart (with quantity initialized to 1)
@@ -250,8 +250,10 @@ const Manu = () => {
 
   const handlePlaceOrder = async () => {
     try {
-      const res = await axios.post(
-        "https://food-rikshaw-64to.vercel.app/purchase/buy"
+      await axios.post(
+        "https://food-rikshaw-64to.vercel.app/purchase/buy",
+        { products: addedproduct },
+        { withCredentials: true }
       );
       settotal(0);
       setaddedproduct([]);
@@ -259,6 +261,11 @@ const Manu = () => {
     } catch (error) {
       console.error("Error placing the order:", error);
     }
+  };
+
+  // New function to handle cancel button
+  const handleCancel = () => {
+    setShowModal(false); // Close the modal without placing the order
   };
 
   return (
@@ -335,46 +342,68 @@ const Manu = () => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg w-1/2">
             <h2 className="text-xl font-semibold mb-4">Edit Your Order</h2>
-            <ul>
-              {addedproduct.map((prod, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between items-center mb-2"
-                >
-                  <span>{prod.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleDecrement(prod._id)}
-                      className="bg-gray-300 text-black px-2 rounded-md"
+            {addedproduct.length > 0 ? (
+              <>
+                <ul>
+                  {addedproduct.map((prod, index) => (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center mb-2"
                     >
-                      -
+                      <span>{prod.name}</span>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleDecrement(prod._id)}
+                          className="bg-gray-300 text-black px-2 rounded-md"
+                        >
+                          -
+                        </button>
+                        <span>{prod.quantity}</span>
+                        <button
+                          onClick={() => handleIncrement(prod._id)}
+                          className="bg-gray-300 text-black px-2 rounded-md"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => handleRemoveProduct(prod._id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-md ml-2"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-lg">Total: ₹{total}</span>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={handleCancel}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    >
+                      Cancel
                     </button>
-                    <span>{prod.quantity}</span>
                     <button
-                      onClick={() => handleIncrement(prod._id)}
-                      className="bg-gray-300 text-black px-2 rounded-md"
+                      onClick={handlePlaceOrder}
+                      className="bg-green-500 text-white px-4 py-2 rounded-md"
                     >
-                      +
-                    </button>
-                    <button
-                      onClick={() => handleRemoveProduct(prod._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-md ml-2"
-                    >
-                      Remove
+                      Place Order
                     </button>
                   </div>
-                </li>
-              ))}
-            </ul>
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-lg">Total: ₹{total}</span>
-              <button
-                onClick={handlePlaceOrder}
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
-              >
-                Place Order
-              </button>
-            </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-center">
+                <p>Your cart is empty.</p>
+                <button
+                  onClick={handleCancel}
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md"
+                >
+                  Close
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
