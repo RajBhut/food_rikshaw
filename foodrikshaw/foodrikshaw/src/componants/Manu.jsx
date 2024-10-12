@@ -87,6 +87,7 @@ const Manu = () => {
             <>
               {lunch.map((pro, index) => (
                 <Card
+                  imageUrl={pro.img_url}
                   className="card"
                   id={pro._id}
                   key={index}
@@ -101,6 +102,7 @@ const Manu = () => {
               {dinner.map((pro, ind) => (
                 <Card
                   className="card"
+                  imageUrl={pro.img_url}
                   id={pro._id}
                   key={ind}
                   name={pro.name}
