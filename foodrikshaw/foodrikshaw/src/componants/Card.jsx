@@ -35,15 +35,14 @@ export default function Card({ name, price, imageUrl, tag, id }) {
 
   const add_to_cart = async (product) => {
     const response = await axios.post(
-      "https://food-rikshaw-64to.vercel.app/user/cart",
+      `${import.meta.env.VITE_API_URL}/user/cart`,
 
       product,
       { withCredentials: true }
     );
-    console.log(response.data);
+    setQuantity(1);
   };
 
-  useEffect(() => {}, []);
   const incrementQuantity = () => {
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + 1;

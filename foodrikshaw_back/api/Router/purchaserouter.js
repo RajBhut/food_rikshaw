@@ -41,6 +41,40 @@ purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
 });
 
 purchaserouter.get(
+    '/username',
+    dbConnectionMiddleware,
+    auth,
+    async (req, res) => {
+        const us = req.user;
+        const raw = await Purchase.find({ user_id: us._id });
+
+        const purchases = [];
+
+        for (const purchase of raw) {
+            let user = await User.findById(purchase.user_id);
+            if (user == null) {
+                continue;
+            }
+            let pro = [];
+
+            for (const items of purchase.products) {
+                let product = await Product.findById(items.product_id);
+
+                let name = product.name;
+                let quantity = items.quantity;
+                let price = product.price;
+                pro.push({ name, quantity, price });
+            }
+
+            purchases.push({ name: user.name, email: user.email, items: pro });
+        }
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.status(200).json(purchases);
+    },
+);
+
+purchaserouter.get(
     '/purchase/today',
     dbConnectionMiddleware,
     async (req, res) => {

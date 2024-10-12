@@ -1,142 +1,9 @@
-// import React, { useState, useEffect, useContext } from "react";
-// import { useLocation } from "react-router-dom";
-// import { PurchaseContext } from "./Purchaseprovider";
-// import Card from "./Card";
-// import axios from "axios";
-// import "./menu.css"; // You can add custom styles if needed
-
-// axios.defaults.withCredentials = true;
-
-// const Manu = () => {
-//   const location = useLocation();
-//   const [selectedTab, setSelectedTab] = useState("lunch");
-//   const { addedproduct, setaddedproduct, total, settotal } =
-//     useContext(PurchaseContext);
-//   const [lunch, setlunch] = useState([]);
-//   const [dinner, setdinner] = useState([]);
-//   const [products, setProducts] = useState();
-
-//   const fetchData = async () => {
-//     const response = await axios.get(
-//       "https://food-rikshaw-64to.vercel.app/product"
-//     );
-//     setProducts(response.data);
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//   }, []);
-
-//   useEffect(() => {
-//     if (products) {
-//       products.map((product) => {
-//         if (product.time === "lunch") setlunch((prev) => [...prev, product]);
-//         else setdinner((prev) => [...prev, product]);
-//       });
-//     }
-//   }, [products]);
-
-//   useEffect(() => {
-//     if (location.state && location.state.selectedTab) {
-//       setSelectedTab(location.state.selectedTab);
-//     }
-//   }, [location]);
-
-//   const handlepurchase = async () => {
-//     try {
-//       const res = await axios.post(
-//         "https://food-rikshaw-64to.vercel.app/purchase/buy"
-//       );
-//       settotal(0);
-//       setaddedproduct([]);
-//     } catch (error) {
-//       console.error("Error during purchase:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100">
-//       {/* Tabs */}
-//       <div className="tabs bg-gray-200 h-16 flex justify-center items-center space-x-8">
-//         <button
-//           className={`py-2 px-4 rounded-md ${
-//             selectedTab === "lunch"
-//               ? "bg-blue-500 text-white"
-//               : "bg-gray-300 hover:bg-gray-400"
-//           }`}
-//           onClick={() => setSelectedTab("lunch")}
-//         >
-//           Lunch
-//         </button>
-//         <button
-//           className={`py-2 px-4 rounded-md ${
-//             selectedTab === "dinner"
-//               ? "bg-blue-500 text-white"
-//               : "bg-gray-300 hover:bg-gray-400"
-//           }`}
-//           onClick={() => setSelectedTab("dinner")}
-//         >
-//           Dinner
-//         </button>
-//       </div>
-
-//       {/* Product Cards */}
-//       {products ? (
-//         <div className="container mx-auto py-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {selectedTab === "lunch" && (
-//             <>
-//               {lunch.map((pro, index) => (
-//                 <Card
-//                   imageUrl={pro.img_url}
-//                   className="card"
-//                   id={pro._id}
-//                   key={index}
-//                   name={pro.name}
-//                   price={pro.price}
-//                 />
-//               ))}
-//             </>
-//           )}
-//           {selectedTab === "dinner" && (
-//             <>
-//               {dinner.map((pro, ind) => (
-//                 <Card
-//                   className="card"
-//                   imageUrl={pro.img_url}
-//                   id={pro._id}
-//                   key={ind}
-//                   name={pro.name}
-//                   price={pro.price}
-//                 />
-//               ))}
-//             </>
-//           )}
-//         </div>
-//       ) : (
-//         <h1 className="text-center text-2xl mt-10">Loading...</h1>
-//       )}
-
-//       {/* Total & Checkout */}
-//       <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg flex justify-between items-center">
-//         <span className="text-xl font-semibold">Total Price: ₹{total}</span>
-//         <button
-//           onClick={handlepurchase}
-//           className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
-//         >
-//           Proceed to Checkout
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Manu;
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { PurchaseContext } from "./Purchaseprovider";
 import Card from "./Card";
 import axios from "axios";
-import "./menu.css"; // You can add custom styles if needed
+import "./menu.css";
 
 axios.defaults.withCredentials = true;
 
@@ -154,12 +21,20 @@ const Manu = () => {
   const [lunch, setlunch] = useState([]);
   const [dinner, setdinner] = useState([]);
   const [products, setProducts] = useState([]);
-  const [showModal, setShowModal] = useState(false); // State for showing the modal
+  const [showModal, setShowModal] = useState(false);
+  const add_to_cart = async (product) => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/user/cart`,
+
+      product,
+      { withCredentials: true }
+    );
+  };
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://food-rikshaw-64to.vercel.app/product"
+        `${import.meta.env.VITE_API_URL}/product`
       );
       setProducts(response.data);
     } catch (error) {
@@ -196,10 +71,9 @@ const Manu = () => {
   }, [location]);
 
   const handlepurchase = () => {
-    setShowModal(true); // Show the modal when "Proceed to Checkout" is clicked
+    setShowModal(true);
   };
 
-  // Function to add product to the cart (with quantity initialized to 1)
   const handleAddProduct = (product) => {
     const existingProduct = addedproduct.find((p) => p._id === product._id);
     if (existingProduct) {
@@ -217,44 +91,46 @@ const Manu = () => {
 
   // Increment quantity
   const handleIncrement = (productId) => {
-    const productToIncrement = addedproduct.find(
-      (prod) => prod._id === productId
+    const productToIncrement = addedproduct.findIndex(
+      (prod) => prod.product_id === productId
     );
-    if (productToIncrement) {
-      setaddedproduct((prev) =>
-        prev.map((prod) =>
-          prod._id === productId
-            ? { ...prod, quantity: prod.quantity + 1 }
-            : prod
-        )
-      );
-      settotal((prev) => prev + productToIncrement.price);
+    if (productToIncrement != -1) {
+      setaddedproduct((prev) => {
+        const updatedProducts = [...prev];
+        updatedProducts[productToIncrement].quantity += 1;
+        add_to_cart(updatedProducts);
+        return updatedProducts;
+      });
+      settotal((prev) => prev + addedproduct[productToIncrement].price);
     }
   };
 
-  // Decrement quantity
   const handleDecrement = (productId) => {
-    const productToDecrement = addedproduct.find(
-      (prod) => prod._id === productId
-    );
-    if (productToDecrement && productToDecrement.quantity > 1) {
-      setaddedproduct((prev) =>
-        prev.map((prod) =>
-          prod._id === productId
-            ? { ...prod, quantity: prod.quantity - 1 }
-            : prod
-        )
-      );
-      settotal((prev) => prev - productToDecrement.price);
-    } else if (productToDecrement.quantity === 1) {
-      handleRemoveProduct(productId); // Remove the product if quantity is 1
+    console.log(addedproduct);
+    const ind = addedproduct.findIndex((prod) => prod.product_id === productId);
+    console.log(ind);
+    if (ind !== -1 && addedproduct[ind].quantity > 1) {
+      setaddedproduct((prev) => {
+        const updatedProducts = [...prev];
+        updatedProducts[ind].quantity -= 1;
+        add_to_cart(updatedProducts);
+        return updatedProducts;
+      });
+      settotal((prev) => prev - addedproduct[ind].price);
+    } else if (addedproduct[ind].quantity === 1) {
+      handleRemoveProduct(productId);
     }
   };
 
   const handleRemoveProduct = (productId) => {
-    const productToRemove = addedproduct.find((prod) => prod._id === productId);
-    if (productToRemove) {
-      setaddedproduct((prev) => prev.filter((prod) => prod._id !== productId));
+    const productToRemove = addedproduct.findIndex(
+      (prod) => prod.product_id === productId
+    );
+    if (productToRemove !== -1) {
+      setaddedproduct((prev) =>
+        prev.filter((prod) => prod.product_id !== productId)
+      );
+      add_to_cart(addedproduct);
       settotal(
         (prev) => prev - productToRemove.price * productToRemove.quantity
       );
@@ -264,21 +140,20 @@ const Manu = () => {
   const handlePlaceOrder = async () => {
     try {
       await axios.post(
-        "https://food-rikshaw-64to.vercel.app/purchase/buy",
+        `${import.meta.env.VITE_API_URL}/purchase/buy`,
         { products: addedproduct },
         { withCredentials: true }
       );
       settotal(0);
       setaddedproduct([]);
-      setShowModal(false); // Close the modal after placing the order
+      setShowModal(false);
     } catch (error) {
       console.error("Error placing the order:", error);
     }
   };
 
-  // New function to handle cancel button
   const handleCancel = () => {
-    setShowModal(false); // Close the modal without placing the order
+    setShowModal(false);
   };
 
   return (
@@ -307,7 +182,6 @@ const Manu = () => {
         </button>
       </div>
 
-      {/* Product Cards */}
       {products.length > 0 ? (
         <div className="container mx-auto py-8 px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {selectedTab === "lunch" &&
@@ -319,7 +193,7 @@ const Manu = () => {
                 key={index}
                 name={pro.name}
                 price={pro.price}
-                onClick={() => handleAddProduct(pro)} // Add to cart when clicked
+                onClick={() => handleAddProduct(pro)}
               />
             ))}
           {selectedTab === "dinner" &&
@@ -331,7 +205,7 @@ const Manu = () => {
                 key={ind}
                 name={pro.name}
                 price={pro.price}
-                onClick={() => handleAddProduct(pro)} // Add to cart when clicked
+                onClick={() => handleAddProduct(pro)}
               />
             ))}
         </div>
@@ -339,7 +213,6 @@ const Manu = () => {
         <h1 className="text-center text-2xl mt-10">Loading...</h1>
       )}
 
-      {/* Total & Checkout */}
       <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg flex justify-between items-center">
         <span className="text-xl font-semibold">Total Price: ₹{total}</span>
         <button
@@ -349,8 +222,6 @@ const Manu = () => {
           Proceed to Checkout
         </button>
       </div>
-
-      {/* Modal for editing order */}
 
       {showModal && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
@@ -367,20 +238,20 @@ const Manu = () => {
                       <span>{productsmap[prod.product_id].name}</span>
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => handleDecrement(prod._id)}
+                          onClick={() => handleDecrement(prod.product_id)}
                           className="bg-gray-300 text-black px-2 rounded-md"
                         >
                           -
                         </button>
                         <span>{prod.quantity}</span>
                         <button
-                          onClick={() => handleIncrement(prod._id)}
+                          onClick={() => handleIncrement(prod.product_id)}
                           className="bg-gray-300 text-black px-2 rounded-md"
                         >
                           +
                         </button>
                         <button
-                          onClick={() => handleRemoveProduct(prod._id)}
+                          onClick={() => handleRemoveProduct(prod.product_id)}
                           className="bg-red-500 text-white px-3 py-1 rounded-md ml-2"
                         >
                           Remove

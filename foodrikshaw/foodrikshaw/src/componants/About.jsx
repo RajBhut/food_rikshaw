@@ -11,7 +11,7 @@ export default function About() {
     const token = Cookies.get("jwt");
 
     try {
-      const data = await axios.get(`${import.meta.env.API_URL}/user/all`, {
+      const data = await axios.get(`${import.meta.env.VITE_API_URL}/user/all`, {
         withCredentials: true,
       });
       setUsers(data);

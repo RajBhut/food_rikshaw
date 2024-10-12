@@ -4,23 +4,17 @@ import { Usercontext } from "./Userprovider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Admin() {
-  const navigator = useNavigate();
-  const { isadmin } = useContext(Usercontext);
+export default function Order() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    if (!isadmin) {
-      navigator("/");
-    } else {
-      fetchOrders();
-    }
+    fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/purchase/all`,
+        `${import.meta.env.VITE_API_URL}/purchase/username`,
         {
           withCredentials: true,
         }
@@ -31,21 +25,13 @@ export default function Admin() {
     }
   };
 
-  const handleOrderReady = (index) => {
-    const updatedOrders = [...orders];
-    updatedOrders[index].isReady = true;
-    setOrders(updatedOrders);
-    // Optionally send the ready status to the backend
-  };
-
-  // Calculate the total for each order
   const calculateTotal = (items) => {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Upcoming Orders</h1>
+      <h1 className="text-2xl font-bold mb-6">Order History</h1>
       {orders.length === 0 ? (
         <p>No orders found.</p>
       ) : (
@@ -70,17 +56,6 @@ export default function Admin() {
                   Total: ₹{calculateTotal(order.items)}
                 </p>
               </div>
-              <button
-                className={`mt-4 px-4 py-2 font-semibold text-white rounded ${
-                  order.isReady
-                    ? "bg-green-500"
-                    : "bg-blue-500 hover:bg-blue-600"
-                }`}
-                onClick={() => handleOrderReady(index)}
-                disabled={order.isReady}
-              >
-                {order.isReady ? "Order Ready" : "Mark as Ready"}
-              </button>
             </div>
           ))}
         </div>
