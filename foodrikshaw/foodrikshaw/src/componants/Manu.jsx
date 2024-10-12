@@ -49,7 +49,6 @@ const Manu = () => {
       );
       settotal(0);
       setaddedproduct([]);
-      console.log("Purchase successful!", res.data);
     } catch (error) {
       console.error("Error during purchase:", error);
     }

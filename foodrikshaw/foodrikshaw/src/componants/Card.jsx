@@ -24,10 +24,9 @@ export default function Card({ name, price, imageUrl, tag, id }) {
         const updatedProducts = [...prevProducts];
         updatedProducts[existingProductIndex].quantity += quantity;
         add_to_cart(updatedProducts);
-        console.log(updatedProducts);
+
         return updatedProducts;
       } else {
-        console.log([...prevProducts, { product_id: id, quantity, price }]);
         add_to_cart([...prevProducts, { product_id: id, quantity, price }]);
         return [...prevProducts, { product_id: id, quantity, price }];
       }

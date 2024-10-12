@@ -16,8 +16,6 @@ export default function About() {
         { withCredentials: true }
       );
       setUsers(data);
-
-      console.log(data.data);
     } catch (error) {
       if (error.status == 400) navigat("/");
       console.log(error);
