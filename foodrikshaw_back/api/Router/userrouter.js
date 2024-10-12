@@ -46,7 +46,18 @@ Userrouter.get('/', (req, res) => {
 
 Userrouter.post('/', async (req, res) => {
     if (mongoose.connection.readyState !== 1) {
-        return res.status(500).json({ message: 'Database not connected' });
+        try {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            console.log('MongoDB connected');
+        } catch (error) {
+            console.error('MongoDB connection error:', error);
+            return res
+                .status(500)
+                .json({ message: 'Database connection error' });
+        }
     }
     const { name, email, password } = req.body;
     try {
