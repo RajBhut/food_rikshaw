@@ -8,10 +8,8 @@ import { purchaserouter } from './Router/purchaserouter.js';
 const app = express();
 app.use(
     cors({
-        origin: 'https://food.rajb.codes', // Only allow requests from this domain
-        credentials: true, // Allow credentials like cookies or authorization headers
-        methods: 'GET, POST, PUT, DELETE, OPTIONS', // Allowed methods
-        allowedHeaders: 'Content-Type, Authorization', // Allowed headers
+        origin: 'https://food.rajb.codes',
+        credentials: true,
     }),
 );
 

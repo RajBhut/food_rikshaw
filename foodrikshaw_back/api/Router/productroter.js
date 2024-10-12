@@ -11,6 +11,8 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
             '-createdAt',
             '-updatedAt',
         ]);
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.json(products);
     } catch (error) {
         console.log(error);
@@ -40,6 +42,8 @@ productrouter.post('/', dbConnectionMiddleware, async (req, res) => {
             day,
             available,
         });
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.status(200).json(product);
     } catch (error) {
         console.log(error);
@@ -51,6 +55,8 @@ productrouter.get('/product/:id', dbConnectionMiddleware, async (req, res) => {
     const id = req.params.id;
     try {
         const product = await Product.findById(id);
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.json(product);
     } catch (error) {
         console.log(error);
@@ -70,6 +76,8 @@ productrouter.get('/products', dbConnectionMiddleware, async (req, res) => {
 
     try {
         const products = await Product.find(filter);
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.json(products);
     } catch (error) {
         console.log(error);

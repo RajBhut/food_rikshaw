@@ -31,7 +31,8 @@ purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
 
         purchases.push({ name: user.name, email: user.email, items: pro });
     }
-
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     res.status(200).json(purchases);
 });
 
@@ -47,6 +48,11 @@ purchaserouter.get(
             const orders = await Purchase.find({
                 createdAt: { $gte: startOfDay, $lte: endOfDay },
             });
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
             res.status(200).send(orders);
         } catch (error) {
             res.status(500).send({ error: "Error fetching today's orders" });
@@ -63,7 +69,8 @@ purchaserouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
         const product = await Product.findById(item.product_id);
         products.push({ product, quantity: item.quantity });
     });
-
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     res.json(products);
 });
 
@@ -92,6 +99,8 @@ purchaserouter.post('/buy', dbConnectionMiddleware, auth, async (req, res) => {
         await User.findByIdAndUpdate(user._id, {
             $set: { cart: [] },
         });
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.status(200).json(purchase);
     } catch (error) {
         res.status(401).json('eror in placing order');
@@ -108,6 +117,11 @@ purchaserouter.put(
                 { isReady: true },
                 { new: true },
             );
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
             res.status(200).send(updatedOrder);
         } catch (error) {
             res.status(500).send({ error: 'Error updating order status' });

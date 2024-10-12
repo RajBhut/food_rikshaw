@@ -66,12 +66,16 @@ Userrouter.post('/', dbConnectionMiddleware, async (req, res) => {
 
 Userrouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     const alluser = await User.find();
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     res.send(alluser);
 });
 Userrouter.get('/profile', auth, async (req, res) => {
     const user = req.user;
     const admin = process.env.ADMIN;
 
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     if (user.email === admin) {
         res.status(200).json([user, { admin: true }]);
     } else {
@@ -112,7 +116,8 @@ Userrouter.post('/login', dbConnectionMiddleware, async (req, res) => {
 
 Userrouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
-
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     try {
         const data = await User.findById(user._id);
         const real_data = data.cart;
@@ -126,7 +131,8 @@ Userrouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
 Userrouter.post('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const products = req.body;
-
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     try {
         await User.findByIdAndUpdate(user._id, {
             $set: { cart: products },
@@ -140,6 +146,8 @@ Userrouter.post('/cart', dbConnectionMiddleware, auth, async (req, res) => {
 
 Userrouter.get('/profile/:email', dbConnectionMiddleware, async (req, res) => {
     const { email } = req.params;
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     try {
         const token = req.cookies.jwt;
         if (!token) {
