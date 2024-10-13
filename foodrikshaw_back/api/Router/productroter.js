@@ -3,6 +3,7 @@ import { Router } from 'express';
 
 import db, { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
+import NodeCache from 'node-cache';
 export const productrouter = Router();
 
 // function generateETag(data) {
@@ -43,45 +44,40 @@ export const productrouter = Router();
 //         res.status(500).send('Internal Server Error');
 //     }
 // });
+
+const productCache = new NodeCache({ stdTTL: 300 }); // Cache with TTL of 300 seconds
+
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {
-        const products = await Product.find().select(['-__v', '-createdAt']);
-        const lastModified = products.length
-            ? products[0].updatedAt
-            : new Date();
-
-        // Log generated headers
-        console.log('Last-Modified:', lastModified);
-
-        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Expose-Headers', 'Last-Modified');
-
-        // Log request headers
-        console.log(
-            'Request If-Modified-Since:',
-            req.headers['if-modified-since'],
-        );
-
-        // Last-Modified comparison
-        if (
-            req.headers['if-modified-since'] &&
-            new Date(req.headers['if-modified-since']) >= new Date(lastModified)
-        ) {
-            return res.status(304).send(); // No modifications
+        // Check if products are cached
+        const cachedProducts = productCache.get('allProducts');
+        if (cachedProducts) {
+            console.log('Cache hit');
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
+            return res.json(cachedProducts);
         }
 
-        // Set Last-Modified header
-        res.setHeader('Last-Modified', lastModified.toUTCString());
+        // If not cached, fetch products from database
+        const products = await Product.find().select(['-__v', '-createdAt']);
+
+        // Cache products for future requests
+        productCache.set('allProducts', products);
+
+        // Set CORS headers
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
 
         // Send product data
         res.json(products);
     } catch (error) {
-        console.log('Error:', error);
+        console.log(error);
         res.status(500).send('Internal Server Error');
     }
 });
-
 productrouter.post('/', dbConnectionMiddleware, async (req, res) => {
     const {
         name,

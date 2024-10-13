@@ -67,40 +67,21 @@ const Manu = () => {
   //   }
   // };
   const fetchData = async () => {
-    const cachedMenu = localStorage.getItem("menu");
-    const cachedLastModified = localStorage.getItem("menuLastModified");
-
     try {
-      const headers = {};
-      // Use Last-Modified for caching
-      if (cachedLastModified) headers["If-Modified-Since"] = cachedLastModified;
-
+      // Fetch the menu data from the backend without any cache headers
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/product`,
         {
-          headers,
-          withCredentials: true,
+          withCredentials: true, // If you are using cookies for authentication
         }
       );
 
-      console.log(response.headers);
-
+      // Check if the response is successful and set the products
       if (response.status === 200) {
-        // Update products and cache data
-        setProducts(response.data);
-        localStorage.setItem("menu", JSON.stringify(response.data));
-        localStorage.setItem(
-          "menuLastModified",
-          response.headers["last-modified"]
-        );
+        setProducts(response.data); // Update state with fresh data
       }
     } catch (error) {
-      if (error.response && error.response.status === 304 && cachedMenu) {
-        // Use cached data if response is 304 (Not Modified)
-        setProducts(JSON.parse(cachedMenu));
-      } else {
-        console.error("Error fetching products:", error);
-      }
+      console.error("Error fetching products:", error);
     }
   };
 
