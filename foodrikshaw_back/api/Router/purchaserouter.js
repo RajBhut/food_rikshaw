@@ -12,6 +12,8 @@ const purchaserouter = Router();
 purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const Purchase = await Purchase.findmany({ user_id: user._id });
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     res.json(Purchase);
 });
 purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
