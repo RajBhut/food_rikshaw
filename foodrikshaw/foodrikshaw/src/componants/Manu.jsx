@@ -22,23 +22,49 @@ const Manu = () => {
   const [dinner, setdinner] = useState([]);
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
   const add_to_cart = async (product) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/user/cart`,
-
       product,
       { withCredentials: true }
     );
   };
 
   const fetchData = async () => {
+    const cachedMenu = localStorage.getItem("menu");
+    const cachedETag = localStorage.getItem("menuETag");
+    const cachedLastModified = localStorage.getItem("menuLastModified");
     try {
+      const headers = {};
+      if (cachedETag) headers["If-None-Match"] = cachedETag;
+      if (cachedLastModified) headers["If-Modified-Since"] = cachedLastModified;
+
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/product`
+        `${import.meta.env.VITE_API_URL}/product`,
+        {
+          headers,
+        }
       );
-      setProducts(response.data);
+      console.log(response.headers);
+      if (response.status === 200) {
+        setProducts(response.data);
+
+        localStorage.setItem("menu", JSON.stringify(response.data));
+        localStorage.setItem("menuETag", response.headers.etag);
+        localStorage.setItem(
+          "menuLastModified",
+          response.headers["last-modified"]
+        );
+      }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      if (error.status == 304) {
+        if (error.status === 304 && cachedMenu) {
+          setProducts(JSON.parse(cachedMenu));
+        }
+      } else {
+        console.error("Error fetching products:", error);
+      }
     }
   };
 
@@ -63,7 +89,6 @@ const Manu = () => {
       setdinner(dinnerItems);
     }
   }, [products]);
-
   useEffect(() => {
     if (location.state && location.state.selectedTab) {
       setSelectedTab(location.state.selectedTab);
@@ -89,7 +114,6 @@ const Manu = () => {
     }
   };
 
-  // Increment quantity
   const handleIncrement = (productId) => {
     const productToIncrement = addedproduct.findIndex(
       (prod) => prod.product_id === productId
@@ -106,9 +130,7 @@ const Manu = () => {
   };
 
   const handleDecrement = (productId) => {
-    console.log(addedproduct);
     const ind = addedproduct.findIndex((prod) => prod.product_id === productId);
-    console.log(ind);
     if (ind !== -1 && addedproduct[ind].quantity > 1) {
       setaddedproduct((prev) => {
         const updatedProducts = [...prev];
@@ -158,7 +180,6 @@ const Manu = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Tabs */}
       <div className="tabs bg-gray-200 h-16 flex justify-center items-center space-x-8">
         <button
           className={`py-2 px-4 rounded-md ${
@@ -265,13 +286,13 @@ const Manu = () => {
                   <div className="flex space-x-4">
                     <button
                       onClick={handleCancel}
-                      className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                      className="bg-gray-400 text-white px-4 py-2 rounded-md"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handlePlaceOrder}
-                      className="bg-green-500 text-white px-4 py-2 rounded-md"
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
                     >
                       Place Order
                     </button>
@@ -279,15 +300,7 @@ const Manu = () => {
                 </div>
               </>
             ) : (
-              <div className="text-center">
-                <p>Your cart is empty.</p>
-                <button
-                  onClick={handleCancel}
-                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md"
-                >
-                  Close
-                </button>
-              </div>
+              <h3 className="text-center text-lg">Your cart is empty</h3>
             )}
           </div>
         </div>

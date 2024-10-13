@@ -4,7 +4,9 @@ import { Purchase } from '../Model/Purchase.model.js';
 import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
-
+import NodeCache from 'node-cache';
+const orderCache = new NodeCache({ stdTTL: 300 });
+const purchaseCache = new NodeCache({ stdTTL: 300 });
 const purchaserouter = Router();
 
 purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
@@ -13,40 +15,21 @@ purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
     res.json(Purchase);
 });
 purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
-    const raw = await Purchase.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const cacheKey = `orders_page_${page}_limit_${limit}`;
 
-    const purchases = [];
-
-    for (const purchase of raw) {
-        let user = await User.findById(purchase.user_id);
-        if (user == null) {
-            continue;
-        }
-        let pro = [];
-
-        for (const items of purchase.products) {
-            let product = await Product.findById(items.product_id);
-
-            let name = product.name;
-            let quantity = items.quantity;
-            let price = product.price;
-            pro.push({ name, quantity, price });
-        }
-
-        purchases.push({ name: user.name, email: user.email, items: pro });
+    const cachedData = orderCache.get(cacheKey);
+    if (cachedData) {
+        return res.status(200).json(cachedData);
     }
-    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.status(200).json(purchases);
-});
 
-purchaserouter.get(
-    '/username',
-    dbConnectionMiddleware,
-    auth,
-    async (req, res) => {
-        const us = req.user;
-        const raw = await Purchase.find({ user_id: us._id });
+    try {
+        const totalOrders = await Purchase.countDocuments();
+
+        const raw = await Purchase.find()
+            .skip((page - 1) * limit)
+            .limit(limit);
 
         const purchases = [];
 
@@ -66,14 +49,83 @@ purchaserouter.get(
                 pro.push({ name, quantity, price });
             }
 
-            purchases.push({ name: user.name, email: user.email, items: pro });
+            purchases.push({
+                name: user.name,
+                email: user.email,
+                items: pro,
+                date: purchase.createdAt,
+            });
         }
+
+        const responseData = {
+            orders: purchases,
+            totalPages: Math.ceil(totalOrders / limit),
+            currentPage: page,
+        };
+
+        orderCache.set(cacheKey, responseData);
+
         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
         res.header('Access-Control-Allow-Credentials', 'true');
-        res.status(200).json(purchases);
+        res.status(200).json(responseData);
+    } catch (error) {
+        res.status(500).send({ error: 'Error fetching orders' });
+    }
+});
+
+purchaserouter.get(
+    '/username',
+    dbConnectionMiddleware,
+    auth,
+    async (req, res) => {
+        const us = req.user;
+        const cacheKey = `user_${us._id}_purchases`;
+
+        const cachedData = purchaseCache.get(cacheKey);
+        if (cachedData) {
+            return res.status(200).json(cachedData);
+        }
+
+        try {
+            const raw = await Purchase.find({ user_id: us._id });
+            const purchases = [];
+
+            for (const purchase of raw) {
+                let user = await User.findById(purchase.user_id);
+                if (user == null) {
+                    continue;
+                }
+                let pro = [];
+
+                for (const items of purchase.products) {
+                    let product = await Product.findById(items.product_id);
+
+                    let name = product.name;
+                    let quantity = items.quantity;
+                    let price = product.price;
+                    pro.push({ name, quantity, price });
+                }
+
+                purchases.push({
+                    name: user.name,
+                    email: user.email,
+                    items: pro,
+                });
+            }
+
+            purchaseCache.set(cacheKey, purchases);
+
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.status(200).json(purchases);
+        } catch (error) {
+            res.status(500).send({ error: 'Error fetching user purchases' });
+        }
     },
 );
-
 purchaserouter.get(
     '/purchase/today',
     dbConnectionMiddleware,
@@ -85,19 +137,18 @@ purchaserouter.get(
         try {
             const orders = await Purchase.find({
                 createdAt: { $gte: startOfDay, $lte: endOfDay },
-            });
+            }).select(['-__v', '-updatedAt']);
             res.header(
                 'Access-Control-Allow-Origin',
                 'https://food.rajb.codes',
             );
             res.header('Access-Control-Allow-Credentials', 'true');
-            res.status(200).send(orders);
+            res.status(200).json(orders);
         } catch (error) {
             res.status(500).send({ error: "Error fetching today's orders" });
         }
     },
 );
-
 purchaserouter.get('/cart', dbConnectionMiddleware, auth, async (req, res) => {
     const user = req.user;
     const real_user = await User.findById(user._id);

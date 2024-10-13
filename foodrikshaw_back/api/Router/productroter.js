@@ -2,17 +2,58 @@ import Product from '../Model/Product.model.js';
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import db, { dbConnectionMiddleware } from '../db.js';
+import crypto from 'crypto';
 export const productrouter = Router();
 
+function generateETag(data) {
+    return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
+}
+// productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
+//     try {
+//         const products = await Product.find().select([
+//             '-__v',
+//             '-createdAt',
+//             '-updatedAt',
+//         ]);
+//         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+//         res.header('Access-Control-Allow-Credentials', 'true');
+//         res.json(products);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {
-        const products = await Product.find().select([
-            '-__v',
-            '-createdAt',
-            '-updatedAt',
-        ]);
+        // Fetch products
+        const products = await Product.find().select(['-__v', '-createdAt']);
+
+        // Generate ETag and Last-Modified
+        const eTag = generateETag(products); // ETag is a hash of the product data
+        const lastModified = products.length
+            ? products[0].updatedAt
+            : new Date();
+
+        // Set CORS headers
         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
         res.header('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
+        // Handle If-None-Match (ETag) and If-Modified-Since (Last-Modified) headers
+        if (req.headers['if-none-match'] === eTag) {
+            return res.status(304).send();
+        }
+
+        if (
+            req.headers['if-modified-since'] &&
+            new Date(req.headers['if-modified-since']) >= new Date(lastModified)
+        ) {
+            return res.status(304).send(); // Not Modified, use cached version
+        }
+        res.setHeader('ETag', eTag);
+
+        res.setHeader('Last-Modified', lastModified.toUTCString());
+
+        // Send product data
         res.json(products);
     } catch (error) {
         console.log(error);
