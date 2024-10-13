@@ -18,9 +18,9 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
             ? products[0].updatedAt
             : new Date();
 
-        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
+        // res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        // res.header('Access-Control-Allow-Credentials', 'true');
+        // res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
 
         if (req.headers['if-none-match'] === eTag) {
             return res.status(304).send();

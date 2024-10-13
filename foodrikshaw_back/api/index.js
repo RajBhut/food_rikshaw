@@ -6,10 +6,12 @@ import { productrouter } from './Router/productroter.js';
 import { purchaserouter } from './Router/purchaserouter.js';
 
 const app = express();
+
 app.use(
     cors({
         origin: 'https://food.rajb.codes',
         credentials: true,
+        exposedHeaders: ['ETag', 'Last-Modified'],
     }),
 );
 
@@ -23,6 +25,7 @@ app.use('/purchase', purchaserouter);
 app.get('/', (req, res) => {
     res.send('Hello World' + Date.now());
 });
+
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
