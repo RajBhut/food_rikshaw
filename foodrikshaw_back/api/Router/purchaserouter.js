@@ -23,6 +23,7 @@ purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
 
     const cachedData = orderCache.get(cacheKey);
     if (cachedData) {
+        console.log('Cache hit');
         return res.status(200).json(cachedData);
     }
 
@@ -85,6 +86,7 @@ purchaserouter.get(
 
         const cachedData = purchaseCache.get(cacheKey);
         if (cachedData) {
+            console.log('Cache hit');
             return res.status(200).json(cachedData);
         }
 

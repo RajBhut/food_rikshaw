@@ -13,28 +13,28 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {
         const products = await Product.find().select(['-__v', '-createdAt']);
 
-        // const eTag = generateETag(products);
-        // const lastModified = products.length
-        //     ? products[0].updatedAt
-        //     : new Date();
+        const eTag = generateETag(products);
+        const lastModified = products.length
+            ? products[0].updatedAt
+            : new Date();
 
         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
         res.header('Access-Control-Allow-Credentials', 'true');
-        // res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
+        res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
 
-        // if (req.headers['if-none-match'] === eTag) {
-        //     return res.status(304).send();
-        // }
+        if (req.headers['if-none-match'] === eTag) {
+            return res.status(304).send();
+        }
 
-        // if (
-        //     req.headers['if-modified-since'] &&
-        //     new Date(req.headers['if-modified-since']) >= new Date(lastModified)
-        // ) {
-        //     return res.status(304).send();
-        // }
-        // res.setHeader('ETag', eTag);
+        if (
+            req.headers['if-modified-since'] &&
+            new Date(req.headers['if-modified-since']) >= new Date(lastModified)
+        ) {
+            return res.status(304).send();
+        }
+        res.setHeader('ETag', eTag);
 
-        // res.setHeader('Last-Modified', lastModified.toUTCString());
+        res.setHeader('Last-Modified', lastModified.toUTCString());
 
         // Send product data
         res.json(products);
