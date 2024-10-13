@@ -1,6 +1,6 @@
 import Product from '../Model/Product.model.js';
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
+
 import db, { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
 export const productrouter = Router();
@@ -21,7 +21,7 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
         res.header('Access-Control-Allow-Credentials', 'true');
         res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
-        console.log(res.header);
+
         if (req.headers['if-none-match'] === eTag) {
             return res.status(304).send();
         }
