@@ -24,8 +24,6 @@ function generateETag(data) {
 //     }
 // });
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
-    res.header('Access-Control-Allow-Credentials', 'true');
     try {
         // Fetch products
         const products = await Product.find().select(['-__v', '-createdAt']);
@@ -41,6 +39,11 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
         res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
 
         if (req.headers['if-none-match'] === eTag) {
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
             return res.status(304).send();
         }
 
@@ -48,12 +51,18 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
             req.headers['if-modified-since'] &&
             new Date(req.headers['if-modified-since']) >= new Date(lastModified)
         ) {
+            res.header(
+                'Access-Control-Allow-Origin',
+                'https://food.rajb.codes',
+            );
+            res.header('Access-Control-Allow-Credentials', 'true');
             return res.status(304).send(); // Not Modified, use cached version
         }
         res.setHeader('ETag', eTag);
 
         res.setHeader('Last-Modified', lastModified.toUTCString());
-
+        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+        res.header('Access-Control-Allow-Credentials', 'true');
         // Send product data
         res.json(products);
     } catch (error) {
