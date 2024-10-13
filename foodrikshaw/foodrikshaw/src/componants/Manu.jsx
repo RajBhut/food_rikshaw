@@ -29,13 +29,50 @@ const Manu = () => {
     );
   };
 
+  // const fetchData = async () => {
+  //   const cachedMenu = localStorage.getItem("menu");
+  //   const cachedETag = localStorage.getItem("menuETag");
+  //   const cachedLastModified = localStorage.getItem("menuLastModified");
+  //   try {
+  //     const headers = {};
+  //     if (cachedETag) headers["If-None-Match"] = cachedETag;
+  //     if (cachedLastModified) headers["If-Modified-Since"] = cachedLastModified;
+
+  //     const response = await axios.get(
+  //       `${import.meta.env.VITE_API_URL}/product`,
+  //       {
+  //         headers,
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     console.log(response.headers);
+  //     if (response.status === 200) {
+  //       setProducts(response.data);
+
+  //       localStorage.setItem("menu", JSON.stringify(response.data));
+  //       localStorage.setItem("menuETag", response.headers.etag);
+  //       localStorage.setItem(
+  //         "menuLastModified",
+  //         response.headers["last-modified"]
+  //       );
+  //     }
+  //   } catch (error) {
+  //     if (error.status == 304) {
+  //       if (error.status === 304 && cachedMenu) {
+  //         setProducts(JSON.parse(cachedMenu));
+  //       }
+  //     } else {
+  //       console.error("Error fetching products:", error);
+  //     }
+  //   }
+  // };
   const fetchData = async () => {
     const cachedMenu = localStorage.getItem("menu");
-    const cachedETag = localStorage.getItem("menuETag");
     const cachedLastModified = localStorage.getItem("menuLastModified");
+
     try {
       const headers = {};
-      if (cachedETag) headers["If-None-Match"] = cachedETag;
+      // Use Last-Modified for caching
       if (cachedLastModified) headers["If-Modified-Since"] = cachedLastModified;
 
       const response = await axios.get(
@@ -45,22 +82,22 @@ const Manu = () => {
           withCredentials: true,
         }
       );
-      console.log(response.headers);
-      if (response.status === 200) {
-        setProducts(response.data);
 
+      console.log(response.headers);
+
+      if (response.status === 200) {
+        // Update products and cache data
+        setProducts(response.data);
         localStorage.setItem("menu", JSON.stringify(response.data));
-        localStorage.setItem("menuETag", response.headers.etag);
         localStorage.setItem(
           "menuLastModified",
           response.headers["last-modified"]
         );
       }
     } catch (error) {
-      if (error.status == 304) {
-        if (error.status === 304 && cachedMenu) {
-          setProducts(JSON.parse(cachedMenu));
-        }
+      if (error.response && error.response.status === 304 && cachedMenu) {
+        // Use cached data if response is 304 (Not Modified)
+        setProducts(JSON.parse(cachedMenu));
       } else {
         console.error("Error fetching products:", error);
       }

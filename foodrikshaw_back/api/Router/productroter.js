@@ -5,9 +5,9 @@ import db, { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
 export const productrouter = Router();
 
-function generateETag(data) {
-    return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
-}
+// function generateETag(data) {
+//     return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
+// }
 
 // productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
 //     try {
@@ -46,34 +46,22 @@ function generateETag(data) {
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {
         const products = await Product.find().select(['-__v', '-createdAt']);
-
-        const eTag = generateETag(products);
         const lastModified = products.length
             ? products[0].updatedAt
             : new Date();
 
         // Log generated headers
-        console.log('Generated ETag:', eTag);
         console.log('Last-Modified:', lastModified);
 
         res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
         res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
+        res.header('Access-Control-Expose-Headers', 'Last-Modified');
 
         // Log request headers
-        console.log('Request If-None-Match:', req.headers['if-none-match']);
         console.log(
             'Request If-Modified-Since:',
             req.headers['if-modified-since'],
         );
-
-        // ETag comparison
-        if (
-            req.headers['if-none-match'] &&
-            req.headers['if-none-match'] === eTag
-        ) {
-            return res.status(304).send(); // No changes
-        }
 
         // Last-Modified comparison
         if (
@@ -83,8 +71,7 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
             return res.status(304).send(); // No modifications
         }
 
-        // Set headers
-        res.setHeader('ETag', eTag);
+        // Set Last-Modified header
         res.setHeader('Last-Modified', lastModified.toUTCString());
 
         // Send product data
