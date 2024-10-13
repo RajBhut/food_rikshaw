@@ -5,8 +5,6 @@ import Card from "./Card";
 import axios from "axios";
 import "./menu.css";
 
-axios.defaults.withCredentials = true;
-
 const Manu = () => {
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState("lunch");
@@ -44,6 +42,7 @@ const Manu = () => {
         `${import.meta.env.VITE_API_URL}/product`,
         {
           headers,
+          withCredentials: true,
         }
       );
       console.log(response.headers);
