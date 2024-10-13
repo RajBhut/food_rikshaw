@@ -24,6 +24,8 @@ function generateETag(data) {
 //     }
 // });
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
+    res.header('Access-Control-Allow-Credentials', 'true');
     try {
         // Fetch products
         const products = await Product.find().select(['-__v', '-createdAt']);
@@ -35,10 +37,9 @@ productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
             : new Date();
 
         // Set CORS headers
-        res.header('Access-Control-Allow-Origin', 'https://food.rajb.codes');
-        res.header('Access-Control-Allow-Credentials', 'true');
+
         res.header('Access-Control-Expose-Headers', 'ETag, Last-Modified');
-        // Handle If-None-Match (ETag) and If-Modified-Since (Last-Modified) headers
+
         if (req.headers['if-none-match'] === eTag) {
             return res.status(304).send();
         }
