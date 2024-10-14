@@ -10,16 +10,6 @@ const connectDB = async () => {
             useUnifiedTopology: true,
         });
         console.log('MongoDB connected');
-
-        const purchaseCollection = mongoose.connection.collection('purchases');
-        const changeStream = purchaseCollection.watch();
-
-        changeStream.on('change', (change) => {
-            console.log('Change detected:', change);
-
-            purchaseCache.flushAll();
-            orderCache.flushAll();
-        });
     } catch (error) {
         console.error('MongoDB connection error:', error);
         process.exit(1);
