@@ -5,7 +5,7 @@ import { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
 
 export const productrouter = Router();
-import { orderCache, purchaseCache } from '../cache.js';
+import { orderCache, purchaseCache, productCache } from '../cache.js';
 // function generateETag(data) {
 //     return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
 // }

@@ -229,8 +229,7 @@ import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
 
-import { orderCache, purchaseCache } from '../cache.js';
-
+import { purchaseCache, orderCache } from '../cache.js';
 const purchaserouter = Router();
 
 // Get all purchases for a user

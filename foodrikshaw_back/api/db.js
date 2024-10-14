@@ -1,14 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
-import { purchaseCache, orderCache } from './cache.js';
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(process.env.MONGODB_URI, {});
         console.log('MongoDB connected');
     } catch (error) {
         console.error('MongoDB connection error:', error);
