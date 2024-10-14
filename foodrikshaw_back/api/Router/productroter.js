@@ -1,7 +1,7 @@
 import Product from '../Model/Product.model.js';
 import { Router } from 'express';
 
-import db, { dbConnectionMiddleware } from '../db.js';
+import { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
 
 export const productrouter = Router();
