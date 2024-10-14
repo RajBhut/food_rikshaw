@@ -4,7 +4,8 @@ import cookieParser from 'cookie-parser';
 import Userrouter from './Router/userrouter.js';
 import { productrouter } from './Router/productroter.js';
 import { purchaserouter } from './Router/purchaserouter.js';
-
+import { orderCache, purchaseCache } from './cache.js';
+import { connectDB } from './db.js';
 const app = express();
 
 app.use(
@@ -29,3 +30,4 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+connectDB();

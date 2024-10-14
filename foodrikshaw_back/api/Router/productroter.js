@@ -3,9 +3,9 @@ import { Router } from 'express';
 
 import db, { dbConnectionMiddleware } from '../db.js';
 import crypto from 'crypto';
-import NodeCache from 'node-cache';
-export const productrouter = Router();
 
+export const productrouter = Router();
+import { orderCache, purchaseCache } from '../cache.js';
 // function generateETag(data) {
 //     return crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
 // }
@@ -44,8 +44,6 @@ export const productrouter = Router();
 //         res.status(500).send('Internal Server Error');
 //     }
 // });
-
-const productCache = new NodeCache({ stdTTL: 300 }); // Cache with TTL of 300 seconds
 
 productrouter.get('/', dbConnectionMiddleware, async (req, res) => {
     try {

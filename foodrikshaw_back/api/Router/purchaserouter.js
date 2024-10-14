@@ -4,9 +4,8 @@ import { Purchase } from '../Model/Purchase.model.js';
 import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
-import NodeCache from 'node-cache';
-const orderCache = new NodeCache({ stdTTL: 300 });
-const purchaseCache = new NodeCache({ stdTTL: 300 });
+
+import { orderCache, purchaseCache } from '../cache.js';
 const purchaserouter = Router();
 
 purchaserouter.get('/', dbConnectionMiddleware, auth, async (req, res) => {
