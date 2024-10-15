@@ -19,6 +19,7 @@ export default function Order() {
           withCredentials: true,
         }
       );
+      console.log(data);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
