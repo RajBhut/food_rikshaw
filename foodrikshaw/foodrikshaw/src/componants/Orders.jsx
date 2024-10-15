@@ -47,12 +47,17 @@ export default function Order() {
               <div className="mt-2">
                 <h3 className="text-lg font-medium">Items:</h3>
                 <ul className="list-disc list-inside">
-                  {order.items.map((item, i) => (
-                    <li key={i}>
-                      {item.name} (x{item.quantity}) - ₹{item.price}
-                    </li>
-                  ))}
+                  {Array.isArray(order.items) && order.items.length > 0 ? (
+                    order.items.map((item, i) => (
+                      <li key={i}>
+                        {item.name} (x{item.quantity}) - ₹{item.price}
+                      </li>
+                    ))
+                  ) : (
+                    <li>No items found for this order.</li>
+                  )}
                 </ul>
+
                 <p className="mt-2 font-semibold">
                   Total: ₹{calculateTotal(order.items)}
                 </p>
