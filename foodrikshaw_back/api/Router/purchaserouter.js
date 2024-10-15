@@ -335,9 +335,9 @@ purchaserouter.get(
                 }
 
                 purchases.push({
-                    name: user.name,
-                    email: user.email,
-                    items: pro,
+                    name: us.name,
+                    email: us.email,
+                    items: Array.isArray(pro) ? pro : [],
                 });
             }
 
