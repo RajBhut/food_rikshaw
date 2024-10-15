@@ -229,7 +229,7 @@ import User from '../Model/User.model.js';
 import Product from '../Model/Product.model.js';
 import { dbConnectionMiddleware } from '../db.js';
 
-import { purchaseCache, orderCache } from '../cache.js';
+import { purchaseCache, orderCache, productCache } from '../cache.js';
 const purchaserouter = Router();
 
 // Get all purchases for a user
@@ -301,7 +301,6 @@ purchaserouter.get('/all', dbConnectionMiddleware, auth, async (req, res) => {
     }
 });
 
-// Get purchases by a specific user (cache)
 purchaserouter.get(
     '/username',
     dbConnectionMiddleware,
@@ -313,6 +312,7 @@ purchaserouter.get(
         const cachedData = purchaseCache.get(cacheKey);
         if (cachedData) {
             console.log('Cache hit');
+            console.log(cachedData);
             return res.status(200).json(cachedData);
         }
 
