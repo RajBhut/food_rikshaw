@@ -312,7 +312,7 @@ purchaserouter.get(
         const cachedData = purchaseCache.get(cacheKey);
         if (cachedData) {
             console.log('Cache hit');
-            console.log(cachedData);
+            console.log(JSON.parse(cachedData));
             return res.status(200).json(cachedData);
         }
 
